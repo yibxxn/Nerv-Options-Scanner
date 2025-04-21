@@ -1,0 +1,73 @@
+
+:root {
+  --bg-color: #0f172a;          /* slate-900 */
+  --text-color: #e2e8f0;        /* slate-300 */
+  --card-bg: #1e293b;           /* slate-800 */
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --link-color: #38bdf8;        /* sky-400 */
+  --link-hover: #0ea5e9;        /* sky-500 */
+  --muted-text: #94a3b8;        /* slate-400 */
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #38bdf888);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  border-radius: 0.5rem;
+}
+
+.read-the-docs {
+  color: var(--muted-text);
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 200ms;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
