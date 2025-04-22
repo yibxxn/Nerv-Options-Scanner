@@ -39,10 +39,24 @@ function App() {
     fetchUnusual(ticker);
   };
 
+  const callPremium = sortedData
+  .filter(opt => opt.type.toUpperCase() === 'CALL')
+  .reduce((acc, opt) => acc + opt.volume * ((opt.bid + opt.ask) / 2) * 100, 0);
+
+const putPremium = sortedData
+  .filter(opt => opt.type.toUpperCase() === 'PUT')
+  .reduce((acc, opt) => acc + opt.volume * ((opt.bid + opt.ask) / 2) * 100, 0);
+
   return (
     <>
       <h1 className="text-3xl font-bold">Options Chain Scanner</h1>
       <br></br>
+      <div className="mb-4 text-center">
+  <p className="text-lg font-medium text-gray-700 dark:text-gray-200">
+    🟢 Call Premium: <span className="font-bold">${callPremium.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span> &nbsp; | &nbsp;
+    🔴 Put Premium: <span className="font-bold">${putPremium.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+  </p>
+</div>
       <form onSubmit={handleSearch} class="max-w-md mx-auto">
         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
         <div class="relative">
@@ -85,12 +99,23 @@ function App() {
           <tbody>
             {sortedData.map((opt, index) => (
               <tr key={index} className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700">
-                <td className="px-6 py-4">{opt.type.toUpperCase()}</td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-2 py-1 rounded text-white font-semibold ${opt.type.toUpperCase() === 'PUT'
+                        ? 'bg-red-500'
+                        : opt.type.toUpperCase() === 'CALL'
+                          ? 'bg-green-500'
+                          : 'bg-gray-300'
+                      }`}
+                  >
+                    {opt.type.toUpperCase()}
+                  </span>
+                </td>
                 <td className="px-6 py-4">{opt.strike}</td>
                 <td className="px-6 py-4">{opt.expiration}</td>
                 <td className="px-6 py-4">{opt.volume}</td>
-                <td className="px-6 py-4">
-                  {(opt.volume * ((opt.bid + opt.ask) / 2) * 100).toLocaleString()}
+                <td className="px-6 py-4 text-green-200">
+                  ${(opt.volume * ((opt.bid + opt.ask) / 2) * 100).toLocaleString()}
                 </td>
                 <td className="px-6 py-4">{opt.openInterest}</td>
                 <td className="px-6 py-4">{opt.bid}</td>

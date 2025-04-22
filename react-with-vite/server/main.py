@@ -6,13 +6,12 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-def is_interesting_option(opt, underlying_price):
+def is_interesting_option(opt, underlying_price, type):
     volume = opt.get('volume', 0)
     oi = opt.get('openInterest', 0)
     bid = opt.get('bid', 0)
     ask = opt.get('ask', 0)
     strike = opt.get('strike', 0)
-    
 
     if bid is None or ask is None:
         return False
@@ -20,11 +19,18 @@ def is_interesting_option(opt, underlying_price):
     mid_price = (bid + ask) / 2
     premium = volume * mid_price * 100
 
-    otm = abs(strike - underlying_price) / underlying_price > 0.2
-    high_premium = premium > 100_000
-    new_interest = volume > oi and volume > 500
+    if type == 'call':
+        otm = strike > underlying_price
+    elif type == 'put':
+        otm = strike < underlying_price
+    else:
+        otm = False
 
-    return new_interest and (high_premium or (otm))
+    high_premium = premium > 50000
+    new_interest = volume > oi
+
+    return otm and high_premium and new_interest
+
 
 @app.route('/api/unusual', methods=['GET'])
 def get_unusual_activity():
@@ -45,14 +51,14 @@ def get_unusual_activity():
         for opt in calls.itertuples(index=False):
             opt_data = opt._asdict()
             opt_data['expiration'] = date
-            if is_interesting_option(opt_data, underlying_price):
+            if is_interesting_option(opt_data, underlying_price, 'call'):
                 opt_data['type'] = 'call'
                 unusual.append(opt_data)
 
         for opt in puts.itertuples(index=False):
             opt_data = opt._asdict()
             opt_data['expiration'] = date
-            if is_interesting_option(opt_data, underlying_price):
+            if is_interesting_option(opt_data, underlying_price, 'put'):
                 opt_data['type'] = 'put'
                 unusual.append(opt_data)
 
