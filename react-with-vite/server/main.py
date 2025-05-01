@@ -29,7 +29,7 @@ def is_interesting_option(opt, underlying_price, type):
     high_premium = premium > 50000
     new_interest = volume > oi
 
-    return otm and high_premium and new_interest
+    return otm and high_premium and new_interest and volume > 1000
 
 
 @app.route('/api/unusual', methods=['GET'])
